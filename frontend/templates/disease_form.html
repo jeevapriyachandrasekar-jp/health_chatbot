@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Enter Symptoms (form)</h2>
+<form id="df">
+  <textarea id="symp" rows="4" cols="50" placeholder="Describe symptoms"></textarea><br>
+  <button type="submit">Predict</button>
+</form>
+<div id="pred"></div>
+
+<script>
+document.getElementById('df').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const m = document.getElementById('symp').value;
+  const fd = new FormData();
+  fd.append('message', m);
+  const res = await fetch('/chat', { method: 'POST', body: fd });
+  const r = await res.json();
+  document.getElementById('pred').innerText = r.error || (r.disease + (r.confidence ? (' (conf: ' + (r.confidence*100).toFixed(1) + '%)') : ''));
+});
+</script>
+{% endblock %}

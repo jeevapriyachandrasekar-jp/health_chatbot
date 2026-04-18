@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Officer Dashboard — {{ current_user.username }}</h2>
+
+<section>
+  <h3>Create Alert</h3>
+  <form method="post" action="{{ url_for('add_alert') }}">
+    <input name="disease" placeholder="Disease" required><br>
+    <input name="location" placeholder="Location" required><br>
+    <input name="description" placeholder="Short description"><br>
+    <button type="submit">Create Alert</button>
+  </form>
+</section>
+
+<section>
+  <h3>Active Alerts</h3>
+  <ul>
+    {% for a in alerts %}
+      <li><b>{{ a.disease }}</b> - {{ a.location }} — {{ a.description }}
+        <form method="post" action="{{ url_for('delete_alert', alert_id=a.id) }}" style="display:inline;">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+    {% else %}
+      <p>No alerts yet.</p>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

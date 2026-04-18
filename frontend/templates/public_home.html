@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Welcome, {{ current_user.username }}</h2>
+
+<section>
+  <h3>Nearby Outbreak Alerts</h3>
+  {% if alerts %}
+    <ul>
+      {% for a in alerts %}
+        <li><b>{{ a.disease }}</b> at {{ a.location }} — {{ a.description }} (reported by {{ a.created_by }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No current alerts.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h3>Chatbot — tell your symptoms</h3>
+  <form id="chatForm">
+    <input name="message" id="msg" placeholder="e.g., fever cough" required>
+    <button type="submit">Ask</button>
+  </form>
+  <div id="response"></div>
+</section>
+
+<script>
+document.getElementById('chatForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('msg').value;
+  const fd = new FormData();
+  fd.append('message', msg);
+  const res = await fetch('/chat', { method:'POST', body: fd });
+  const data = await res.json();
+  document.getElementById('response').innerText = data.error || (data.disease + (data.confidence ? (' (conf: ' + (data.confidence*100).toFixed(1) + '%)') : ''));
+});
+</script>
+
+{% if alerts|length > 0 %}
+<script>
+  // simple in-page alert - you can improve with push-notification later
+  document.addEventListener('DOMContentLoaded', () => {
+    notify('Outbreak alert nearby', 'Please check the alerts section for details.');
+  });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Health Companion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/notify.js') }}"></script>
+</head>
+<body>
+  <header>
+    <h1>Health Companion</h1>
+    {% if current_user.is_authenticated %}
+      <nav>
+        {% if current_user.role == 'public' %}
+          <a href="{{ url_for('public_home') }}">Home</a>
+          <a href="{{ url_for('vaccination') }}">Vaccination</a>
+        {% else %}
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+      </nav>
+    {% else %}
+      <nav>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+      </nav>
+    {% endif %}
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashlist">
+          {% for cat, msg in messages %}
+            <div class="flash {{cat}}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

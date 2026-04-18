@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Vaccination Schedule</h2>
+<table border="1">
+  <tr><th>Age</th><th>Vaccine</th></tr>
+  {% for s in schedule %}
+    <tr><td>{{ s.age }}</td><td>{{ s.vaccine }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
